@@ -9,6 +9,7 @@ import random
 from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 ENCODING = 'utf-8'
+import subprocess
 
 def get_args(argv=None):
     '''read the arguments from command line and return the values'''
@@ -21,4 +22,15 @@ def get_args(argv=None):
     serverIP = args.s
     port = args.p
     logfile = args.w
-    return server_port, log_file, web_address
+    return serverIP, port, logfile
+
+
+def ping(host):
+    result = subprocess.run(["ping", "google.com", "-c 3"], capture_output=True, text=True)
+    output = result.stdout
+    output_string = output.split()
+    print("Loss = ", output_string[-10])
+    print("Delay = ", output_string[-2].split('/')[1])
+
+    # return IP????
+    return subprocess.call(command) == 0
