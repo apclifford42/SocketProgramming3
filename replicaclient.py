@@ -20,11 +20,6 @@ def get_args(argv=None):
     return loadBalancer, server_port, log_file, dest_file
 
 
-
-# this class makes me want to die
-
-
-
 def get_bit(num, i):
         return int((num & (1 << i)) != 0)
 
