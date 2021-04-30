@@ -10,7 +10,7 @@ from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 ENCODING = 'utf-8'
 import subprocess
-
+ 
 def get_args(argv=None):
     '''read the arguments from command line and return the values'''
     parser = argparse.ArgumentParser(description="LIGHTSERVER")
