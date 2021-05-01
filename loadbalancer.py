@@ -1,4 +1,4 @@
-import argparse
++import argparse
 import socket
 import struct
 import threading
@@ -22,6 +22,7 @@ def get_args(argv=None):
     serverIPtxt = args.s
     port = args.p
     logfile = args.l
+    
     serverIP = 0
     #This takes the text file pulled in with -s and converts all lines (ip addresses, hopefully) in the file to an array holding all the ip addresses.
     with open(serverIPtxt) as f:
@@ -59,3 +60,40 @@ def allping(ips):
 
     #returns the big ol' array
     return metric
+
+
+if __name__ == '__main__':
+    
+     #parse arguments
+     serverIPtxt, logfile, port= get_args(sys.argv[1:])
+    print("Port: {}, Log location: {}, Web Address: {}".format(port, logfile, serverIPtxt))
+
+    #configure logging
+    logging.basicConfig(filename=logfile, filemode='w', format='%(asctime)s - %(levelname)s - %(funcName)s - %(message)s', level=logging.INFO)
+    logging.info('Starting LIGHTSERVER')
+    logging.info(f"Server Port = {port}, Logfile = {logfile}, Web Address = {serverIPtxt}")
+
+    #get the local IP. You might have to adjust it depending on where you are running this.
+    my_ip = socket.gethostbyname(socket.gethostname())
+    logging.info(f"Server IP = {my_ip}")
+
+    #create socket
+    try:
+        server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        logging.info(f"Success: Created socket on IP:{my_ip}, Port:{port}")
+    except socket.error as e:
+        logging.error(f"Error: Creating socket on IP:{my_ip}, Port:{port}, Error:{e}")
+        sys.exit(1)
+
+    #bind it to the ip and port
+    try:
+        server_socket.bind((my_ip,port))
+        logging.info(f"Success:Bind Successful")
+    except socket.error as e:
+        logging.error(f"Error: Binding socket to IP:{my_ip}, Port:{port}, Error:{e}")
+        sys.exit(1)
+
+    #download the web object
+    web_object = get_webpage(serverIPtxt)
+
+    #start handling clients, keep track of how many objects are sent per connection
